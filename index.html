@@ -52,7 +52,7 @@
             gap: 20px;
         }
 
-        /* Left Side - Image Gallery */
+        /* Left Side - Image Gallery & Carousel */
         .product-gallery {
             flex: 1;
             min-width: 0;
@@ -63,13 +63,39 @@
              border-radius: 8px;
              overflow: hidden;
              margin-bottom: 15px;
+             position: relative; /* For positioning arrows */
         }
+        
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.4);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.2s;
+            z-index: 10;
+        }
+        .carousel-btn:hover {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+        #prev-image-btn { left: 10px; }
+        #next-image-btn { right: 10px; }
 
         #main-product-image {
             max-width: 100%;
             height: auto;
             display: block;
-            aspect-ratio: 1/1;
+            aspect-ratio: 1.1 / 1;
             object-fit: contain;
             transition: opacity 0.3s ease-in-out;
         }
@@ -78,7 +104,7 @@
             display: flex;
             gap: 10px;
             justify-content: center;
-            flex-wrap: wrap;
+            flex-wrap: wrap; /* This will be overridden for mobile */
         }
 
         .thumbnail {
@@ -90,6 +116,7 @@
             transition: all 0.2s ease;
             object-fit: contain;
             padding: 2px;
+            flex-shrink: 0; /* Prevents thumbnails from shrinking on mobile */
         }
 
         .thumbnail:hover {
@@ -131,18 +158,17 @@
             font-size: 13px;
             font-weight: 500;
             color: var(--text-light);
-            position: relative;
-            top: 1px;
         }
 
         #product-price {
-            font-size: 20px;
-            font-weight: 600;
+            font-size: 24px;
+            font-weight: 700;
             color: var(--primary-color);
             margin-bottom: 20px;
+            transition: color 0.2s;
         }
 
-        .variant-options p {
+        .variant-options p, .quantity-section p {
             font-size: 14px;
             font-weight: 600;
             margin-bottom: 8px;
@@ -156,56 +182,54 @@
         }
 
         .variant-switcher input { display: none; }
-
         .variant-switcher label {
             display: flex;
             align-items: center;
             gap: 8px;
             padding: 10px;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s ease;
             flex-grow: 1;
             justify-content: center;
         }
-
         .variant-switcher label:hover { border-color: #bdc3c7; }
-
         .variant-switcher input:checked + label {
             border-color: var(--primary-color);
             background-color: #fef5f4;
-            box-shadow: 0 0 5px rgba(192, 57, 43, 0.2);
         }
-
         .variant-thumb {
             width: 30px;
             height: 30px;
             object-fit: contain;
             border-radius: 4px;
         }
-
         .variant-label-text {
             font-weight: 600;
             font-size: 14px;
         }
 
         .actions {
-            display: flex;
-            gap: 10px;
+            margin-top: auto;
             padding-top: 15px;
+            border-top: 1px solid #f0f0f0;
+        }
+        
+        .quantity-and-buy {
+            display: flex;
             flex-direction: column;
+            gap: 15px;
         }
 
         .quantity-selector {
             display: flex;
             align-items: center;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            margin-bottom: 10px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
             overflow: hidden;
+            max-width: 150px;
         }
-
         .quantity-selector button {
             border: none;
             background-color: #f7f7f7;
@@ -217,16 +241,11 @@
             line-height: 1;
             transition: background-color 0.2s;
         }
-        .quantity-selector button:hover {
-             background-color: #ededed;
-        }
-
+        .quantity-selector button:hover { background-color: #ededed; }
         .quantity-selector input {
-            flex-grow: 1;
+            width: 100%;
             text-align: center;
             border: none;
-            border-left: 1px solid var(--border-color);
-            border-right: 1px solid var(--border-color);
             font-size: 16px;
             font-weight: 600;
             background: none;
@@ -235,9 +254,7 @@
             -moz-appearance: textfield;
         }
         .quantity-selector input::-webkit-outer-spin-button,
-        .quantity-selector input::-webkit-inner-spin-button {
-            -webkit-appearance: none; margin: 0;
-        }
+        .quantity-selector input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 
         .buy-now-btn {
             background-color: var(--secondary-color);
@@ -246,14 +263,13 @@
             padding: 15px 20px;
             font-size: 16px;
             font-weight: 700;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             text-transform: uppercase;
             letter-spacing: 1px;
             transition: background-color 0.2s ease, transform 0.1s ease;
             width: 100%;
         }
-
         .buy-now-btn:hover { background-color: var(--primary-color); }
         .buy-now-btn:active { transform: scale(0.98); }
         
@@ -265,9 +281,7 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
             margin-top: 20px;
         }
-        .accordion-item {
-            border-bottom: 1px solid var(--border-color);
-        }
+        .accordion-item { border-bottom: 1px solid var(--border-color); }
         .accordion-item:last-child { border-bottom: none; }
         .accordion-header {
             width: 100%;
@@ -307,6 +321,21 @@
         }
         .accordion-content .content-inner { padding: 0 5px 15px 0; }
         
+        /* Mobile Specific Styles */
+        @media (max-width: 768px) {
+            .thumbnail-container {
+                flex-wrap: nowrap;
+                justify-content: flex-start;
+                overflow-x: auto;
+                padding-bottom: 10px; /* Space for scrollbar */
+                -ms-overflow-style: none;  /* IE and Edge */
+                scrollbar-width: none;  /* Firefox */
+            }
+            .thumbnail-container::-webkit-scrollbar {
+                display: none; /* Hide scrollbar for Chrome, Safari, Opera */
+            }
+        }
+        
         /* Desktop styles */
         @media (min-width: 769px) {
             .product-container { padding: 40px; }
@@ -316,9 +345,12 @@
             }
             .product-gallery { max-width: 50%; }
             #product-title { font-size: 26px; }
-            #product-price { font-size: 24px; }
-            .actions { flex-direction: row; }
-            .quantity-selector { margin-bottom: 0; }
+            #product-price { font-size: 28px; }
+            .quantity-and-buy {
+                flex-direction: row;
+                align-items: center;
+            }
+            .buy-now-btn { max-width: 250px; }
         }
     </style>
 </head>
@@ -329,10 +361,12 @@
             <div class="product-main-content">
                 <div class="product-gallery">
                     <div class="main-image-wrapper">
+                        <button class="carousel-btn" id="prev-image-btn" aria-label="Previous Image">&lt;</button>
                         <img src="https://einnalab.com/wp-content/uploads/2023/11/EiNNALAB-Deer-Placenta-30000mg-DarkRed-Front-768x614.png" id="main-product-image" alt="Deer Placenta Bottle - Front View">
+                        <button class="carousel-btn" id="next-image-btn" aria-label="Next Image">&gt;</button>
                     </div>
                     <div class="thumbnail-container" id="thumbnail-gallery">
-                        <img src="https://einnalab.com/wp-content/uploads/2023/11/EiNNALAB-Deer-Placenta-30000mg-DarkRed-Front-768x614.png" class="thumbnail active-thumbnail" alt="Thumbnail - Front View">
+                        <img src="https://einnalab.com/wp-content/uploads/2023/11/EiNNALAB-Deer-Placenta-30000mg-DarkRed-Front-768x614.png" class="thumbnail" alt="Thumbnail - Front View">
                         <img src="https://einnalab.com/wp-content/uploads/2023/11/EiNNALAB-Deer-Placenta-30000mg-DarkRed-Left-768x614.png" class="thumbnail" alt="Thumbnail - Left View">
                         <img src="https://einnalab.com/wp-content/uploads/2023/11/EiNNALAB-Deer-Placenta-30000mg-DarkRed-Right-768x614.png" class="thumbnail" alt="Thumbnail - Right View">
                         <img src="https://einnalab.com/wp-content/uploads/2023/11/EiNNALAB-Deer-Placenta-30000mg-Lab-Metal-Bac-ONLY-768x743.png" class="thumbnail" alt="Thumbnail - Lab Test">
@@ -350,32 +384,36 @@
                     <div class="variant-options">
                         <p><strong>Package:</strong></p>
                         <div class="variant-switcher">
-                            <input type="radio" id="option1" name="product_option" value="1_bottle" checked>
-                            <label for="option1"
+                            <input type="radio" id="option1" name="product_option" value="1_bottle" checked
                                    data-title="Deer Placenta 30,000mg – 1 Bottle | EINNALAB"
-                                   data-price="$140.00"
-                                   data-image-url="https://einnalab.com/wp-content/uploads/2023/11/EiNNALAB-Deer-Placenta-30000mg-DarkRed-Front-768x614.png">
+                                   data-price-value="140">
+                            <label for="option1">
                                 <img src="https://einnalab.com/wp-content/uploads/2023/11/EiNNALAB-Deer-Placenta-30000mg-DarkRed-Front-768x614.png" alt="1 Bottle" class="variant-thumb">
                                 <span class="variant-label-text">1 Bottle</span>
                             </label>
 
-                            <input type="radio" id="option2" name="product_option" value="10_bottles">
-                            <label for="option2"
+                            <input type="radio" id="option2" name="product_option" value="10_bottles"
                                    data-title="Deer Placenta 30,000mg – 10 Bottles | EINNALAB"
-                                   data-price="$900.00"
-                                   data-image-url="https://einnalab.com/wp-content/uploads/2023/11/EiNNALAB-Deer-Placenta-30000mg-Front-10-Bot-768x480.jpg">
+                                   data-price-value="900">
+                            <label for="option2">
                                 <img src="https://einnalab.com/wp-content/uploads/2023/11/EiNNALAB-Deer-Placenta-30000mg-Front-10-Bot-768x480.jpg" alt="10 Bottles" class="variant-thumb">
                                 <span class="variant-label-text">10 Bottles</span>
                             </label>
                         </div>
                     </div>
+                    
                     <div class="actions">
-                        <div class="quantity-selector">
-                            <button id="decrease-qty" aria-label="Decrease quantity">-</button>
-                            <input type="number" id="quantity" value="1" min="1" aria-label="Quantity">
-                            <button id="increase-qty" aria-label="Increase quantity">+</button>
+                        <div class="quantity-and-buy">
+                            <div class="quantity-section">
+                                <p><strong>Quantity:</strong></p>
+                                <div class="quantity-selector">
+                                    <button id="decrease-qty" aria-label="Decrease quantity">-</button>
+                                    <input type="number" id="quantity" value="1" min="1" aria-label="Quantity">
+                                    <button id="increase-qty" aria-label="Increase quantity">+</button>
+                                </div>
+                            </div>
+                            <button class="buy-now-btn">Buy Now</button>
                         </div>
-                        <button class="buy-now-btn">Buy Now</button>
                     </div>
                 </div>
             </div>
@@ -409,84 +447,89 @@
             // --- Element Selectors ---
             const mainImage = document.getElementById('main-product-image');
             const productTitle = document.getElementById('product-title');
-            const productPrice = document.getElementById('product-price');
+            const productPriceEl = document.getElementById('product-price');
             const variantRadios = document.querySelectorAll('input[name="product_option"]');
-            const thumbnailGallery = document.getElementById('thumbnail-gallery');
             const thumbnails = document.querySelectorAll('.thumbnail');
-            
-            // --- Fade and Change Main Image ---
-            function changeMainImage(newSrc, newAlt) {
-                mainImage.style.opacity = 0;
-                setTimeout(() => {
-                    mainImage.src = newSrc;
-                    mainImage.alt = newAlt;
-                    mainImage.style.opacity = 1;
-                }, 200);
-            }
-
-            // --- Update Thumbnail Active State ---
-            function setActiveThumbnail(selectedThumbnail) {
-                 thumbnails.forEach(thumb => thumb.classList.remove('active-thumbnail'));
-                 if(selectedThumbnail) {
-                    selectedThumbnail.classList.add('active-thumbnail');
-                 }
-            }
-            
-            // --- Thumbnail Click Logic ---
-            thumbnails.forEach(thumb => {
-                thumb.addEventListener('click', function() {
-                    // Only change image if a 1-bottle option is selected
-                    if(document.getElementById('option1').checked){
-                       changeMainImage(this.src, this.alt);
-                       setActiveThumbnail(this);
-                    }
-                });
-            });
-
-            // --- Variant Switching Logic ---
-            function updateProductDisplay(selectedRadio) {
-                const label = document.querySelector(`label[for="${selectedRadio.id}"]`);
-                const newTitle = label.dataset.title;
-                const newPrice = label.dataset.price;
-                const newImageUrl = label.dataset.imageUrl;
-
-                productTitle.textContent = newTitle;
-                productPrice.textContent = newPrice;
-                changeMainImage(newImageUrl, label.alt);
-
-                if (selectedRadio.value === '10_bottles') {
-                    thumbnailGallery.style.display = 'none';
-                } else {
-                    thumbnailGallery.style.display = 'flex';
-                    // set first thumbnail as active
-                    setActiveThumbnail(thumbnails[0]);
-                }
-            }
-
-            variantRadios.forEach(radio => {
-                radio.addEventListener('change', function () {
-                    if (this.checked) {
-                        updateProductDisplay(this);
-                    }
-                });
-            });
-
-            // --- Initial Page Load Setup ---
-            const initiallySelectedRadio = document.querySelector('input[name="product_option"]:checked');
-            if (initiallySelectedRadio) {
-                updateProductDisplay(initiallySelectedRadio);
-            }
-            
-            // --- Quantity Selector Logic ---
+            const prevBtn = document.getElementById('prev-image-btn');
+            const nextBtn = document.getElementById('next-image-btn');
             const quantityInput = document.getElementById('quantity');
             const decreaseBtn = document.getElementById('decrease-qty');
             const increaseBtn = document.getElementById('increase-qty');
+            
+            // --- State ---
+            let currentImageIndex = 0;
+            const imageSources = Array.from(thumbnails).map(thumb => thumb.src);
+
+            // --- Core Functions ---
+            function showImage(index) {
+                // Fade and Change Main Image
+                mainImage.style.opacity = 0;
+                setTimeout(() => {
+                    mainImage.src = imageSources[index];
+                    mainImage.alt = thumbnails[index].alt;
+                    mainImage.style.opacity = 1;
+                }, 200);
+
+                // Update Active Thumbnail
+                thumbnails.forEach(thumb => thumb.classList.remove('active-thumbnail'));
+                thumbnails[index].classList.add('active-thumbnail');
+                currentImageIndex = index;
+            }
+
+            function updatePrice() {
+                const selectedVariant = document.querySelector('input[name="product_option"]:checked');
+                const basePrice = parseFloat(selectedVariant.dataset.priceValue);
+                const quantity = parseInt(quantityInput.value);
+                const totalPrice = basePrice * quantity;
+                
+                // Format to currency (e.g., $140.00)
+                productPriceEl.textContent = totalPrice.toLocaleString('en-US', {
+                    style: 'currency',
+                    currency: 'USD'
+                });
+            }
+            
+            function updateProductDetails() {
+                 const selectedVariant = document.querySelector('input[name="product_option"]:checked');
+                 productTitle.textContent = selectedVariant.dataset.title;
+                 updatePrice();
+            }
+
+            // --- Event Listeners ---
+            nextBtn.addEventListener('click', () => {
+                let nextIndex = (currentImageIndex + 1) % imageSources.length;
+                showImage(nextIndex);
+            });
+
+            prevBtn.addEventListener('click', () => {
+                let prevIndex = (currentImageIndex - 1 + imageSources.length) % imageSources.length;
+                showImage(prevIndex);
+            });
+
+            thumbnails.forEach((thumb, index) => {
+                thumb.addEventListener('click', () => showImage(index));
+            });
+
+            variantRadios.forEach(radio => {
+                radio.addEventListener('change', updateProductDetails);
+            });
+            
             decreaseBtn.addEventListener('click', () => {
                 let val = parseInt(quantityInput.value);
-                if (val > 1) quantityInput.value = val - 1;
+                if (val > 1) {
+                    quantityInput.value = val - 1;
+                    updatePrice();
+                }
             });
             increaseBtn.addEventListener('click', () => {
                 quantityInput.value = parseInt(quantityInput.value) + 1;
+                updatePrice();
+            });
+            quantityInput.addEventListener('input', () => {
+                 if (parseInt(quantityInput.value) < 1 || isNaN(parseInt(quantityInput.value))) {
+                    quantityInput.value = 1;
+                }
+                updatePrice();
             });
 
             // --- Accordion Logic ---
@@ -502,6 +545,10 @@
                     }
                 });
             });
+
+            // --- Initial Page Load Setup ---
+            showImage(0);
+            updateProductDetails();
         });
     </script>
 
