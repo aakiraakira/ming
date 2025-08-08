@@ -17,6 +17,7 @@
             --background-light: #f9f9f9;
             --white: #ffffff;
             --star-color: #f39c12;
+            --light-grey-bg: #f7f9fa;
         }
 
         body {
@@ -63,7 +64,11 @@
              border-radius: 8px;
              overflow: hidden;
              margin-bottom: 15px;
-             position: relative; /* For positioning arrows */
+             position: relative;
+             cursor: grab; /* Indicate swipeable area */
+        }
+        .main-image-wrapper:active {
+            cursor: grabbing;
         }
         
         .carousel-btn {
@@ -77,17 +82,18 @@
             width: 40px;
             height: 40px;
             font-size: 24px;
-            font-weight: bold;
             cursor: pointer;
-            display: flex;
+            display: none; /* Hidden on touch, shown on hover for desktop */
             justify-content: center;
             align-items: center;
-            transition: background-color 0.2s;
+            transition: background-color 0.2s, opacity 0.3s;
             z-index: 10;
+            opacity: 0;
         }
-        .carousel-btn:hover {
-            background-color: rgba(0, 0, 0, 0.7);
+        .main-image-wrapper:hover .carousel-btn {
+            opacity: 1;
         }
+        .carousel-btn:hover { background-color: rgba(0, 0, 0, 0.7); }
         #prev-image-btn { left: 10px; }
         #next-image-btn { right: 10px; }
 
@@ -98,13 +104,14 @@
             aspect-ratio: 1.1 / 1;
             object-fit: contain;
             transition: opacity 0.3s ease-in-out;
+            user-select: none; /* Prevent image dragging */
+            -webkit-user-drag: none;
         }
 
         .thumbnail-container {
             display: flex;
             gap: 10px;
             justify-content: center;
-            flex-wrap: wrap; /* This will be overridden for mobile */
         }
 
         .thumbnail {
@@ -116,13 +123,9 @@
             transition: all 0.2s ease;
             object-fit: contain;
             padding: 2px;
-            flex-shrink: 0; /* Prevents thumbnails from shrinking on mobile */
+            flex-shrink: 0;
         }
-
-        .thumbnail:hover {
-            border-color: var(--primary-color);
-        }
-
+        .thumbnail:hover { border-color: var(--primary-color); }
         .thumbnail.active-thumbnail {
             border-color: var(--primary-color);
             box-shadow: 0 0 8px rgba(192, 57, 43, 0.7);
@@ -135,132 +138,69 @@
             flex-direction: column;
         }
 
-        #product-title {
-            font-size: 22px;
-            font-weight: 700;
-            margin: 0 0 10px 0;
-            color: var(--text-dark);
-            line-height: 1.3;
-        }
-
-        .product-rating {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 10px;
-        }
-        .star-icons {
-            color: var(--star-color);
-            font-size: 18px;
-            letter-spacing: 2px;
-        }
-        .review-summary-text {
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text-light);
-        }
-
-        #product-price {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--primary-color);
-            margin-bottom: 20px;
-            transition: color 0.2s;
-        }
-
-        .variant-options p, .quantity-section p {
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: var(--text-dark);
-        }
-
-        .variant-switcher {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
+        #product-title { font-size: 22px; font-weight: 700; margin: 0 0 10px 0; color: var(--text-dark); line-height: 1.3; }
+        .product-rating { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+        .star-icons { color: var(--star-color); font-size: 18px; letter-spacing: 2px; }
+        .review-summary-text { font-size: 13px; font-weight: 500; color: var(--text-light); }
+        #product-price { font-size: 24px; font-weight: 700; color: var(--primary-color); margin-bottom: 15px; transition: color 0.2s; }
+        .variant-options p { font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--text-dark); }
+        .variant-switcher { display: flex; gap: 10px; margin-bottom: 15px; }
         .variant-switcher input { display: none; }
-        .variant-switcher label {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px;
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            flex-grow: 1;
-            justify-content: center;
-        }
+        .variant-switcher label { display: flex; align-items: center; gap: 8px; padding: 10px; border: 2px solid var(--border-color); border-radius: 8px; cursor: pointer; transition: all 0.2s ease; flex-grow: 1; justify-content: center; }
         .variant-switcher label:hover { border-color: #bdc3c7; }
-        .variant-switcher input:checked + label {
-            border-color: var(--primary-color);
-            background-color: #fef5f4;
-        }
-        .variant-thumb {
-            width: 30px;
-            height: 30px;
-            object-fit: contain;
-            border-radius: 4px;
-        }
-        .variant-label-text {
-            font-weight: 600;
-            font-size: 14px;
-        }
-
+        .variant-switcher input:checked + label { border-color: var(--primary-color); background-color: #fef5f4; }
+        .variant-thumb { width: 30px; height: 30px; object-fit: contain; border-radius: 4px; }
+        .variant-label-text { font-weight: 600; font-size: 14px; }
+        
+        /* Purchase Actions Layout */
         .actions {
             margin-top: auto;
             padding-top: 15px;
             border-top: 1px solid #f0f0f0;
         }
-        
-        .quantity-and-buy {
+        .purchase-actions {
             display: flex;
-            flex-direction: column;
-            gap: 15px;
+            gap: 10px;
+            align-items: stretch; /* Make items same height */
         }
-
-        .quantity-selector {
+        
+        /* Quantity Selector Style */
+        .quantity-selector-new {
             display: flex;
             align-items: center;
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            overflow: hidden;
-            max-width: 150px;
-        }
-        .quantity-selector button {
-            border: none;
-            background-color: #f7f7f7;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            padding: 10px 15px;
-            color: var(--text-light);
-            line-height: 1;
-            transition: background-color 0.2s;
-        }
-        .quantity-selector button:hover { background-color: #ededed; }
-        .quantity-selector input {
-            width: 100%;
-            text-align: center;
-            border: none;
-            font-size: 16px;
-            font-weight: 600;
-            background: none;
+            background-color: var(--light-grey-bg);
+            border: 1px solid var(--border-color);
             color: var(--text-dark);
-            padding: 10px 0;
-            -moz-appearance: textfield;
+            border-radius: 8px;
+            padding: 5px 5px 5px 15px;
+            flex-shrink: 0;
         }
-        .quantity-selector input::-webkit-outer-spin-button,
-        .quantity-selector input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .quantity-display {
+            font-size: 20px;
+            font-weight: 700;
+            margin-right: 15px;
+        }
+        .quantity-arrows {
+            display: flex;
+            flex-direction: column;
+        }
+        .quantity-arrows button {
+            background: none;
+            border: none;
+            color: var(--text-dark);
+            cursor: pointer;
+            padding: 4px 8px;
+            font-size: 10px;
+            line-height: 1;
+        }
+        .quantity-arrows button:hover {
+            color: var(--primary-color);
+        }
 
         .buy-now-btn {
             background-color: var(--secondary-color);
             color: white;
             border: none;
-            padding: 15px 20px;
             font-size: 16px;
             font-weight: 700;
             border-radius: 8px;
@@ -268,60 +208,23 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             transition: background-color 0.2s ease, transform 0.1s ease;
-            width: 100%;
+            flex-grow: 1; /* Take remaining space */
         }
         .buy-now-btn:hover { background-color: var(--primary-color); }
         .buy-now-btn:active { transform: scale(0.98); }
         
         /* Product Information Accordion */
-        .product-info-section {
-            background-color: var(--white);
-            padding: 15px 20px 20px;
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            margin-top: 20px;
-        }
+        .product-info-section { background-color: var(--white); padding: 15px 20px 20px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05); margin-top: 20px; }
         .accordion-item { border-bottom: 1px solid var(--border-color); }
         .accordion-item:last-child { border-bottom: none; }
-        .accordion-header {
-            width: 100%;
-            background: none;
-            border: none;
-            text-align: left;
-            padding: 15px 0;
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--text-dark);
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: color 0.2s;
-        }
+        .accordion-header { width: 100%; background: none; border: none; text-align: left; padding: 15px 0; font-size: 15px; font-weight: 600; color: var(--text-dark); cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: color 0.2s; }
         .accordion-header:hover { color: var(--primary-color); }
-        .accordion-header::after {
-            content: '+';
-            font-size: 20px;
-            font-weight: 300;
-            color: var(--text-light);
-            transition: transform 0.3s ease, color 0.2s;
-        }
-        .accordion-header.active::after {
-            content: '−';
-            transform: rotate(180deg);
-            color: var(--primary-color);
-        }
-        .accordion-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease-out;
-            color: #34495e;
-            font-size: 14px;
-            line-height: 1.5;
-        }
+        .accordion-header::after { content: '+'; font-size: 20px; font-weight: 300; color: var(--text-light); transition: transform 0.3s ease, color 0.2s; }
+        .accordion-header.active::after { content: '−'; transform: rotate(180deg); color: var(--primary-color); }
+        .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; color: #34495e; font-size: 14px; line-height: 1.5; }
         .accordion-content .content-inner { padding: 0 5px 15px 0; }
         
-        /* Mobile Specific Styles */
+        /* Responsive Styles */
         @media (max-width: 768px) {
             .thumbnail-container {
                 flex-wrap: nowrap;
@@ -331,26 +234,15 @@
                 -ms-overflow-style: none;  /* IE and Edge */
                 scrollbar-width: none;  /* Firefox */
             }
-            .thumbnail-container::-webkit-scrollbar {
-                display: none; /* Hide scrollbar for Chrome, Safari, Opera */
-            }
+            .thumbnail-container::-webkit-scrollbar { display: none; }
         }
-        
-        /* Desktop styles */
         @media (min-width: 769px) {
+            .carousel-btn { display: flex; } /* Show arrows on desktop */
             .product-container { padding: 40px; }
-            .product-main-content {
-                flex-direction: row;
-                gap: 40px;
-            }
+            .product-main-content { flex-direction: row; gap: 40px; }
             .product-gallery { max-width: 50%; }
             #product-title { font-size: 26px; }
             #product-price { font-size: 28px; }
-            .quantity-and-buy {
-                flex-direction: row;
-                align-items: center;
-            }
-            .buy-now-btn { max-width: 250px; }
         }
     </style>
 </head>
@@ -359,8 +251,9 @@
     <div class="page-wrapper">
         <div class="product-container">
             <div class="product-main-content">
+                <!-- Image Gallery Section -->
                 <div class="product-gallery">
-                    <div class="main-image-wrapper">
+                    <div class="main-image-wrapper" id="main-image-container">
                         <button class="carousel-btn" id="prev-image-btn" aria-label="Previous Image">&lt;</button>
                         <img src="https://einnalab.com/wp-content/uploads/2023/11/EiNNALAB-Deer-Placenta-30000mg-DarkRed-Front-768x614.png" id="main-product-image" alt="Deer Placenta Bottle - Front View">
                         <button class="carousel-btn" id="next-image-btn" aria-label="Next Image">&gt;</button>
@@ -374,43 +267,28 @@
                     </div>
                 </div>
 
+                <!-- Details Section -->
                 <div class="product-details">
                     <h1 id="product-title">Deer Placenta 30,000mg – 1 Bottle | EINNALAB</h1>
-                    <div class="product-rating">
-                        <div class="star-icons">★★★★★</div>
-                        <span class="review-summary-text">5.0 (Based on 80 reviews)</span>
-                    </div>
+                    <div class="product-rating"><div class="star-icons">★★★★★</div><span class="review-summary-text">5.0 (Based on 80 reviews)</span></div>
                     <p id="product-price">$140.00</p>
-                    <div class="variant-options">
-                        <p><strong>Package:</strong></p>
+                    <div class="variant-options"><p><strong>Package:</strong></p>
                         <div class="variant-switcher">
-                            <input type="radio" id="option1" name="product_option" value="1_bottle" checked
-                                   data-title="Deer Placenta 30,000mg – 1 Bottle | EINNALAB"
-                                   data-price-value="140">
-                            <label for="option1">
-                                <img src="https://einnalab.com/wp-content/uploads/2023/11/EiNNALAB-Deer-Placenta-30000mg-DarkRed-Front-768x614.png" alt="1 Bottle" class="variant-thumb">
-                                <span class="variant-label-text">1 Bottle</span>
-                            </label>
-
-                            <input type="radio" id="option2" name="product_option" value="10_bottles"
-                                   data-title="Deer Placenta 30,000mg – 10 Bottles | EINNALAB"
-                                   data-price-value="900">
-                            <label for="option2">
-                                <img src="https://einnalab.com/wp-content/uploads/2023/11/EiNNALAB-Deer-Placenta-30000mg-Front-10-Bot-768x480.jpg" alt="10 Bottles" class="variant-thumb">
-                                <span class="variant-label-text">10 Bottles</span>
-                            </label>
+                            <input type="radio" id="option1" name="product_option" value="1_bottle" checked data-title="Deer Placenta 30,000mg – 1 Bottle | EINNALAB" data-price-value="140">
+                            <label for="option1"><img src="https://einnalab.com/wp-content/uploads/2023/11/EiNNALAB-Deer-Placenta-30000mg-DarkRed-Front-768x614.png" alt="1 Bottle" class="variant-thumb"><span class="variant-label-text">1 Bottle</span></label>
+                            <input type="radio" id="option2" name="product_option" value="10_bottles" data-title="Deer Placenta 30,000mg – 10 Bottles | EINNALAB" data-price-value="900" data-image-override="https://einnalab.com/wp-content/uploads/2023/11/EiNNALAB-Deer-Placenta-30000mg-Front-10-Bot-768x480.jpg">
+                            <label for="option2"><img src="https://einnalab.com/wp-content/uploads/2023/11/EiNNALAB-Deer-Placenta-30000mg-Front-10-Bot-768x480.jpg" alt="10 Bottles" class="variant-thumb"><span class="variant-label-text">10 Bottles</span></label>
                         </div>
                     </div>
-                    
                     <div class="actions">
-                        <div class="quantity-and-buy">
-                            <div class="quantity-section">
-                                <p><strong>Quantity:</strong></p>
-                                <div class="quantity-selector">
-                                    <button id="decrease-qty" aria-label="Decrease quantity">-</button>
-                                    <input type="number" id="quantity" value="1" min="1" aria-label="Quantity">
-                                    <button id="increase-qty" aria-label="Increase quantity">+</button>
+                        <div class="purchase-actions">
+                            <div class="quantity-selector-new">
+                                <span id="quantity-display" class="quantity-display">1</span>
+                                <div class="quantity-arrows">
+                                    <button id="increase-qty" aria-label="Increase quantity">▲</button>
+                                    <button id="decrease-qty" aria-label="Decrease quantity">▼</button>
                                 </div>
+                                <input type="number" id="quantity" value="1" min="1" style="display: none;">
                             </div>
                             <button class="buy-now-btn">Buy Now</button>
                         </div>
@@ -441,11 +319,11 @@
         </div>
     </div>
 
-
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // --- Element Selectors ---
+            // --- DOM Element Selection ---
             const mainImage = document.getElementById('main-product-image');
+            const mainImageContainer = document.getElementById('main-image-container');
             const productTitle = document.getElementById('product-title');
             const productPriceEl = document.getElementById('product-price');
             const variantRadios = document.querySelectorAll('input[name="product_option"]');
@@ -453,12 +331,15 @@
             const prevBtn = document.getElementById('prev-image-btn');
             const nextBtn = document.getElementById('next-image-btn');
             const quantityInput = document.getElementById('quantity');
+            const quantityDisplay = document.getElementById('quantity-display');
             const decreaseBtn = document.getElementById('decrease-qty');
             const increaseBtn = document.getElementById('increase-qty');
             
-            // --- State ---
+            // --- State Management ---
             let currentImageIndex = 0;
             const imageSources = Array.from(thumbnails).map(thumb => thumb.src);
+            let touchStartX = 0;
+            let touchEndX = 0;
 
             // --- Core Functions ---
             function showImage(index) {
@@ -471,7 +352,7 @@
                 }, 200);
 
                 // Update Active Thumbnail
-                thumbnails.forEach(thumb => thumb.classList.remove('active-thumbnail'));
+                thumbnails.forEach(t => t.classList.remove('active-thumbnail'));
                 thumbnails[index].classList.add('active-thumbnail');
                 currentImageIndex = index;
             }
@@ -480,10 +361,7 @@
                 const selectedVariant = document.querySelector('input[name="product_option"]:checked');
                 const basePrice = parseFloat(selectedVariant.dataset.priceValue);
                 const quantity = parseInt(quantityInput.value);
-                const totalPrice = basePrice * quantity;
-                
-                // Format to currency (e.g., $140.00)
-                productPriceEl.textContent = totalPrice.toLocaleString('en-US', {
+                productPriceEl.textContent = (basePrice * quantity).toLocaleString('en-US', {
                     style: 'currency',
                     currency: 'USD'
                 });
@@ -492,65 +370,68 @@
             function updateProductDetails() {
                  const selectedVariant = document.querySelector('input[name="product_option"]:checked');
                  productTitle.textContent = selectedVariant.dataset.title;
+                 
+                 // Logic to handle image switching for variants
+                 if (selectedVariant.dataset.imageOverride) {
+                     // For 10-bottle pack, set specific image
+                     mainImage.style.opacity = 0;
+                     setTimeout(() => {
+                        mainImage.src = selectedVariant.dataset.imageOverride;
+                        // Attempt to find a matching alt tag from the label, otherwise use a default
+                        const label = document.querySelector(`label[for="${selectedVariant.id}"]`);
+                        mainImage.alt = label ? label.alt : 'Product Image';
+                        mainImage.style.opacity = 1;
+                     }, 200);
+                     // De-select any active thumbnail since this is an override image
+                     thumbnails.forEach(t => t.classList.remove('active-thumbnail'));
+                 } else {
+                     // For 1-bottle pack, reset to the first image in the gallery
+                     showImage(0);
+                 }
                  updatePrice();
+            }
+            
+            function changeQuantity(amount) {
+                let currentVal = parseInt(quantityInput.value);
+                let newVal = currentVal + amount;
+                if (newVal < 1) newVal = 1;
+                quantityInput.value = newVal;
+                quantityDisplay.textContent = newVal;
+                updatePrice();
+            }
+            
+            function handleSwipe() {
+                if (touchEndX < touchStartX - 50) nextBtn.click(); // Swipe Left
+                if (touchEndX > touchStartX + 50) prevBtn.click(); // Swipe Right
             }
 
             // --- Event Listeners ---
-            nextBtn.addEventListener('click', () => {
-                let nextIndex = (currentImageIndex + 1) % imageSources.length;
-                showImage(nextIndex);
-            });
-
-            prevBtn.addEventListener('click', () => {
-                let prevIndex = (currentImageIndex - 1 + imageSources.length) % imageSources.length;
-                showImage(prevIndex);
-            });
-
-            thumbnails.forEach((thumb, index) => {
-                thumb.addEventListener('click', () => showImage(index));
-            });
-
-            variantRadios.forEach(radio => {
-                radio.addEventListener('change', updateProductDetails);
-            });
+            nextBtn.addEventListener('click', () => showImage((currentImageIndex + 1) % imageSources.length));
+            prevBtn.addEventListener('click', () => showImage((currentImageIndex - 1 + imageSources.length) % imageSources.length));
+            thumbnails.forEach((thumb, index) => thumb.addEventListener('click', () => showImage(index)));
+            variantRadios.forEach(radio => radio.addEventListener('change', updateProductDetails));
             
-            decreaseBtn.addEventListener('click', () => {
-                let val = parseInt(quantityInput.value);
-                if (val > 1) {
-                    quantityInput.value = val - 1;
-                    updatePrice();
-                }
-            });
-            increaseBtn.addEventListener('click', () => {
-                quantityInput.value = parseInt(quantityInput.value) + 1;
-                updatePrice();
-            });
-            quantityInput.addEventListener('input', () => {
-                 if (parseInt(quantityInput.value) < 1 || isNaN(parseInt(quantityInput.value))) {
-                    quantityInput.value = 1;
-                }
-                updatePrice();
+            increaseBtn.addEventListener('click', () => changeQuantity(1));
+            decreaseBtn.addEventListener('click', () => changeQuantity(-1));
+
+            mainImageContainer.addEventListener('touchstart', e => touchStartX = e.changedTouches[0].screenX, { passive: true });
+            mainImageContainer.addEventListener('touchend', e => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
             });
 
-            // --- Accordion Logic ---
             const accordionHeaders = document.querySelectorAll('.accordion-header');
             accordionHeaders.forEach(header => {
                 header.addEventListener('click', function() {
-                    const content = this.nextElementSibling;
                     this.classList.toggle('active');
-                    if (content.style.maxHeight) {
-                        content.style.maxHeight = null;
-                    } else {
-                        content.style.maxHeight = content.scrollHeight + "px";
-                    }
+                    const content = this.nextElementSibling;
+                    content.style.maxHeight = content.style.maxHeight ? null : content.scrollHeight + "px";
                 });
             });
 
             // --- Initial Page Load Setup ---
-            showImage(0);
             updateProductDetails();
         });
     </script>
-
 </body>
 </html>
