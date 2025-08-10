@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Head Office / Distributors – Globe</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0b10; --bg2:#12121a; --accent:#8b0000; --text:#e9e9ef; --muted:#a7adba;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; background: radial-gradient(1200px 800px at 15% 10%, #1b1b27 0%, var(--bg) 55%) no-repeat,
+                          linear-gradient(180deg, var(--bg2), var(--bg));
+    color:var(--text); font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+    overflow:hidden;
+  }
+  #chartdiv{ width:100%; height:100vh; max-width:100%; }
+  .title{
+    position:fixed; top:20px; left:50%; transform:translateX(-50%);
+    font-weight:700; font-size:clamp(20px,3.8vw,42px); letter-spacing:.3px; text-shadow:0 12px 30px rgba(0,0,0,.45);
+    pointer-events:none;
+  }
+  .loc{
+    position:fixed; top:80px; left:50%; transform:translateX(-50%);
+    background:rgba(18,18,26,.75); border:1px solid rgba(255,255,255,.10); backdrop-filter: blur(6px);
+    padding:8px 12px; border-radius:999px; font-size:14px; color:var(--muted);
+    box-shadow:0 8px 24px rgba(0,0,0,.35);
+  }
+  .btn{
+    position:fixed; top:20px; right:20px;
+    background:linear-gradient(180deg,#c41414,var(--accent)); color:#fff; border:none; border-radius:12px;
+    padding:10px 14px; font-weight:600; cursor:pointer; box-shadow:0 12px 28px rgba(139,0,0,.35), inset 0 1px 0 rgba(255,255,255,.25);
+  }
+  .legend{
+    position:fixed; left:20px; bottom:20px; color:var(--muted);
+    background:rgba(18,18,26,.7); border:1px solid rgba(255,255,255,.08); border-radius:12px; padding:8px 12px; backdrop-filter: blur(6px);
+  }
+</style>
+</head>
+<body>
+
+<div id="chartdiv"></div>
+<div class="title">Head Office / Distributors</div>
+<div id="loc" class="loc">Tap a pin…</div>
+<button id="resetBtn" class="btn">Reset view</button>
+<div class="legend">Drag to rotate • Scroll/Pinch to zoom</div>
+
+<!-- amCharts v5 -->
+<script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+<script src="https://cdn.amcharts.com/lib/5/map.js"></script>
+<script src="https://cdn.amcharts.com/lib/5/geodata/worldLow.js"></script>
+<script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+
+<script>
+am5.ready(function() {
+
+  // ---------- CONFIG ----------
+  const ACCENT = am5.color(0x8b0000);
+  const DEFAULT_ZOOM = 1.1;
+  const FOCUS_ZOOM   = 2.6;
+  const ROT_DUR      = 800;
+
+  // Demo locations (replace later with your real list)
+  const LOCATIONS = [
+    { name:"San Diego, USA",      lat:32.7157,  lon:-117.1611 },
+    { name:"London, UK",          lat:51.5072,  lon:-0.1276   },
+    { name:"Zurich, Switzerland", lat:47.3769,  lon:8.5417    },
+    { name:"Milan, Italy",        lat:45.4642,  lon:9.1900    },
+    { name:"Dubai, UAE",          lat:25.2048,  lon:55.2708   },
+    { name:"Delhi, India",        lat:28.6139,  lon:77.2090   },
+    { name:"Bangkok, Thailand",   lat:13.7563,  lon:100.5018  },
+    { name:"Singapore",           lat:1.3521,   lon:103.8198  },
+    { name:"Jakarta, Indonesia",  lat:-6.2088,  lon:106.8456  },
+    { name:"Hong Kong",           lat:22.3193,  lon:114.1694  },
+    { name:"Tokyo, Japan",        lat:35.6762,  lon:139.6503  },
+    { name:"Sydney, Australia",   lat:-33.8688, lon:151.2093  }
+  ];
+
+  // ---------- ROOT / THEME ----------
+  var root = am5.Root.new("chartdiv");
+  root.setThemes([ am5themes_Animated.new(root) ]);
+
+  // ---------- CHART (Orthographic "globe") ----------
+  var chart = root.container.children.push(am5map.MapChart.new(root, {
+    projection: am5map.geoOrthographic(),
+    panX: "rotateX",
+    panY: "rotateY",
+    wheelY: "zoom",
+    rotationX: 0,
+    rotationY: 0,
+    minZoomLevel: 1,
+    maxZoomLevel: 8,
+    paddingBottom: 0, paddingTop: 0, paddingLeft: 0, paddingRight: 0
+  }));
+
+  // Optional autorotation (stops on interaction)
+  let autoRot;
+  function startAutoRotate() {
+    stopAutoRotate();
+    autoRot = chart.animate({ key: "rotationX", from: chart.get("rotationX"), to: chart.get("rotationX") + 360, duration: 30000, loops: Infinity });
+  }
+  function stopAutoRotate() { if (autoRot) { autoRot.stop(); autoRot = null; } }
+  startAutoRotate();
+  chart.chartContainer.events.on("pointerdown", stopAutoRotate);
+  chart.chartContainer.events.on("wheel", stopAutoRotate);
+
+  // ---------- WORLD POLYGONS ----------
+  var polygonSeries = chart.series.push(am5map.MapPolygonSeries.new(root, {
+    geoJSON: am5geodata_worldLow
+  }));
+
+  polygonSeries.mapPolygons.template.setAll({
+    tooltipText: "{name}",
+    interactive: true,
+    fillOpacity: 0.9,
+    fill: am5.color(0x263042),
+    stroke: am5.color(0x3d4860),
+    strokeOpacity: 0.5
+  });
+
+  polygonSeries.mapPolygons.template.states.create("hover", {
+    fill: am5.color(0x33425c)
+  });
+
+  // ---------- BACKGROUND + GRATICULE ----------
+  var backgroundSeries = chart.series.push(am5map.MapPolygonSeries.new(root, {}));
+  backgroundSeries.mapPolygons.template.setAll({
+    fill: root.interfaceColors.get("alternativeBackground"),
+    fillOpacity: 0.08,
+    strokeOpacity: 0
+  });
+  backgroundSeries.data.push({ geometry: am5map.getGeoRectangle(90, 180, -90, -180) });
+
+  var graticuleSeries = chart.series.push(am5map.GraticuleSeries.new(root, {}));
+  graticuleSeries.mapLines.template.setAll({
+    strokeOpacity: 0.15,
+    stroke: am5.color(0x3d4860)
+  });
+
+  // ---------- POINTS (Pins) ----------
+  var pointSeries = chart.series.push(am5map.MapPointSeries.new(root, {}));
+
+  // Bullet (red pin with pulse)
+  pointSeries.bullets.push(function () {
+    var circle = am5.Circle.new(root, {
+      radius: 6,
+      fill: ACCENT,
+      stroke: am5.color(0xffffff),
+      strokeWidth: 1.5,
+      tooltipText: "{name}",
+      cursorOverStyle: "pointer"
+    });
+
+    circle.animate({
+      key: "scale",
+      from: 1,
+      to: 1.35,
+      duration: 800,
+      loops: Infinity,
+      easing: am5.ease.yoyo(am5.ease.cubic)
+    });
+
+    // On click: rotate & zoom to the pin
+    circle.events.on("click", function(ev){
+      var di = ev.target.dataItem;
+      var ctx = di.dataContext;
+      focusOn(ctx.lon, ctx.lat, ctx.name);
+    });
+
+    return am5.Bullet.new(root, { sprite: circle });
+  });
+
+  // Feed data to point series
+  pointSeries.data.setAll(LOCATIONS.map(loc => ({
+    name: loc.name,
+    // Geometry: [lon, lat]
+    geometry: { type: "Point", coordinates: [loc.lon, loc.lat] },
+    lon: loc.lon,
+    lat: loc.lat
+  })));
+
+  // ---------- FOCUS / RESET ----------
+  const locEl = document.getElementById("loc");
+
+  function focusOn(lon, lat, name){
+    stopAutoRotate();
+    locEl.textContent = name;
+
+    // Rotate so that [lon, lat] is centered; for orthographic:
+    // center by rotating to the negative of target coordinates.
+    chart.animate({ key: "rotationX", to: -lon, duration: ROT_DUR, easing: am5.ease.out(am5.ease.cubic) });
+    chart.animate({ key: "rotationY", to: -lat, duration: ROT_DUR, easing: am5.ease.out(am5.ease.cubic) });
+
+    // Zoom in a bit
+    chart.animate({ key: "zoomLevel", to: FOCUS_ZOOM, duration: ROT_DUR });
+  }
+
+  function resetView(){
+    hideTooltips();
+    locEl.textContent = "Tap a pin…";
+    chart.animate({ key: "rotationX", to: 0, duration: 700, easing: am5.ease.out(am5.ease.cubic) });
+    chart.animate({ key: "rotationY", to: 0, duration: 700, easing: am5.ease.out(am5.ease.cubic) });
+    chart.animate({ key: "zoomLevel", to: DEFAULT_ZOOM, duration: 700 });
+    startAutoRotate();
+  }
+
+  function hideTooltips(){
+    pointSeries.bulletsContainer.children.each(function(b){ b.hideTooltip(); });
+  }
+
+  // Initial zoom a touch out
+  chart.set("zoomLevel", DEFAULT_ZOOM);
+
+  document.getElementById("resetBtn").addEventListener("click", resetView);
+
+  // Resize safety (amCharts handles most automatically)
+  window.addEventListener("resize", () => { /* nothing extra needed */ });
+
+}); // end am5.ready()
+</script>
+
+</body>
+</html>
