@@ -3,40 +3,42 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Head Office / Distributors – Globe</title>
+<title>EINNALAB – Head Office / Distributors</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --bg:#0b0b10; --bg2:#12121a; --accent:#8b0000; --text:#e9e9ef; --muted:#a7adba;
-  }
-  *{box-sizing:border-box}
-  html,body{height:100%}
+  :root{ --bg:#0b0b10; --bg2:#12121a; --accent:#8b0000; --text:#e9e9ef; --muted:#a7adba; }
+  *{ box-sizing:border-box }
+  html,body{ height:100% }
   body{
-    margin:0; background: radial-gradient(1200px 800px at 15% 10%, #1b1b27 0%, var(--bg) 55%) no-repeat,
-                          linear-gradient(180deg, var(--bg2), var(--bg));
-    color:var(--text); font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+    margin:0; color:var(--text);
+    font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+    background: radial-gradient(1200px 800px at 15% 10%, #1b1b27 0%, var(--bg) 55%) no-repeat,
+                linear-gradient(180deg, var(--bg2), var(--bg));
     overflow:hidden;
   }
   #chartdiv{ width:100%; height:100vh; max-width:100%; }
+
   .title{
     position:fixed; top:20px; left:50%; transform:translateX(-50%);
-    font-weight:700; font-size:clamp(20px,3.8vw,42px); letter-spacing:.3px; text-shadow:0 12px 30px rgba(0,0,0,.45);
-    pointer-events:none;
+    font-weight:700; font-size:clamp(20px,3.8vw,42px); letter-spacing:.3px;
+    text-shadow:0 12px 30px rgba(0,0,0,.45); pointer-events:none;
   }
   .loc{
     position:fixed; top:80px; left:50%; transform:translateX(-50%);
-    background:rgba(18,18,26,.75); border:1px solid rgba(255,255,255,.10); backdrop-filter: blur(6px);
-    padding:8px 12px; border-radius:999px; font-size:14px; color:var(--muted);
-    box-shadow:0 8px 24px rgba(0,0,0,.35);
+    background:rgba(18,18,26,.75); border:1px solid rgba(255,255,255,.10);
+    backdrop-filter: blur(6px); padding:8px 12px; border-radius:999px;
+    font-size:14px; color:var(--muted); box-shadow:0 8px 24px rgba(0,0,0,.35);
   }
   .btn{
     position:fixed; top:20px; right:20px;
     background:linear-gradient(180deg,#c41414,var(--accent)); color:#fff; border:none; border-radius:12px;
-    padding:10px 14px; font-weight:600; cursor:pointer; box-shadow:0 12px 28px rgba(139,0,0,.35), inset 0 1px 0 rgba(255,255,255,.25);
+    padding:10px 14px; font-weight:600; cursor:pointer;
+    box-shadow:0 12px 28px rgba(139,0,0,.35), inset 0 1px 0 rgba(255,255,255,.25);
   }
   .legend{
     position:fixed; left:20px; bottom:20px; color:var(--muted);
-    background:rgba(18,18,26,.7); border:1px solid rgba(255,255,255,.08); border-radius:12px; padding:8px 12px; backdrop-filter: blur(6px);
+    background:rgba(18,18,26,.7); border:1px solid rgba(255,255,255,.08);
+    border-radius:12px; padding:8px 12px; backdrop-filter: blur(6px);
   }
 </style>
 </head>
@@ -55,35 +57,54 @@
 <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
 
 <script>
-am5.ready(function() {
-
+am5.ready(function () {
   // ---------- CONFIG ----------
   const ACCENT = am5.color(0x8b0000);
   const DEFAULT_ZOOM = 1.1;
   const FOCUS_ZOOM   = 2.6;
   const ROT_DUR      = 800;
 
-  // Demo locations (replace later with your real list)
+  // All locations (your list)
   const LOCATIONS = [
-    { name:"San Diego, USA",      lat:32.7157,  lon:-117.1611 },
-    { name:"London, UK",          lat:51.5072,  lon:-0.1276   },
-    { name:"Zurich, Switzerland", lat:47.3769,  lon:8.5417    },
-    { name:"Milan, Italy",        lat:45.4642,  lon:9.1900    },
-    { name:"Dubai, UAE",          lat:25.2048,  lon:55.2708   },
-    { name:"Delhi, India",        lat:28.6139,  lon:77.2090   },
-    { name:"Bangkok, Thailand",   lat:13.7563,  lon:100.5018  },
-    { name:"Singapore",           lat:1.3521,   lon:103.8198  },
-    { name:"Jakarta, Indonesia",  lat:-6.2088,  lon:106.8456  },
-    { name:"Hong Kong",           lat:22.3193,  lon:114.1694  },
-    { name:"Tokyo, Japan",        lat:35.6762,  lon:139.6503  },
-    { name:"Sydney, Australia",   lat:-33.8688, lon:151.2093  }
+    // Head Office
+    { role:"Head Office", org:"EINNALAB - Singapore",
+      address:["10 Anson Road #33-03", "International Plaza", "Singapore 079903"],
+      lat: 1.2763, lon: 103.8467 },
+
+    // R&D Office
+    { role:"R&D Office", org:"EINNALAB - USA",
+      address:["1700 Santa Fe Avenue", "Long Beach CA 90813"],
+      lat: 33.7879, lon: -118.2159 },
+
+    // Exclusive Distributors
+    { role:"Exclusive Distributor", org:"EINNALAB - Hungary",
+      address:["8468 Kolontár, Kossuth Str. 36"],
+      lat: 47.1070, lon: 17.4340 },
+    { role:"Exclusive Distributor", org:"EINNALAB - Slovakia",
+      address:["Biskupa Kiralya, Komarno; Nitriansky; 94501"],
+      lat: 47.7636, lon: 18.1227 },
+
+    // Distributor – existing
+    { role:"Distributor", org:"Poland", address:[], lat: 52.2297, lon: 21.0122 },
+
+    // Distributor – new you requested
+    { role:"Distributor", org:"Dubai, UAE", address:[],      lat:25.2048,  lon:55.2708 },
+    { role:"Distributor", org:"India",      address:[],      lat:28.6139,  lon:77.2090 },
+    { role:"Distributor", org:"Sri Lanka",  address:[],      lat: 6.9271,  lon:79.8612 },
+    { role:"Distributor", org:"Cambodia",   address:[],      lat:11.5564,  lon:104.9282 },
+    { role:"Distributor", org:"Taiwan",     address:[],      lat:25.0330,  lon:121.5654 },
+    { role:"Distributor", org:"Hong Kong",  address:[],      lat:22.3193,  lon:114.1694 },
+    { role:"Distributor", org:"Australia",  address:[],      lat:-33.8688, lon:151.2093 },
   ];
 
-  // ---------- ROOT / THEME ----------
+  // --------- ROOT/THEME ----------
   var root = am5.Root.new("chartdiv");
   root.setThemes([ am5themes_Animated.new(root) ]);
 
-  // ---------- CHART (Orthographic "globe") ----------
+  // Hide amCharts logo (note: license required for production use)
+  if (root._logo) root._logo.set("forceHidden", true);
+
+  // --------- CHART (orthographic globe) ----------
   var chart = root.container.children.push(am5map.MapChart.new(root, {
     projection: am5map.geoOrthographic(),
     panX: "rotateX",
@@ -92,26 +113,23 @@ am5.ready(function() {
     rotationX: 0,
     rotationY: 0,
     minZoomLevel: 1,
-    maxZoomLevel: 8,
-    paddingBottom: 0, paddingTop: 0, paddingLeft: 0, paddingRight: 0
+    maxZoomLevel: 8
   }));
 
-  // Optional autorotation (stops on interaction)
+  // Optional autorotate (stops on interaction)
   let autoRot;
-  function startAutoRotate() {
+  function startAutoRotate(){
     stopAutoRotate();
-    autoRot = chart.animate({ key: "rotationX", from: chart.get("rotationX"), to: chart.get("rotationX") + 360, duration: 30000, loops: Infinity });
+    autoRot = chart.animate({ key:"rotationX", from: chart.get("rotationX"),
+      to: chart.get("rotationX")+360, duration:30000, loops:Infinity });
   }
-  function stopAutoRotate() { if (autoRot) { autoRot.stop(); autoRot = null; } }
+  function stopAutoRotate(){ if(autoRot){ autoRot.stop(); autoRot=null; } }
   startAutoRotate();
   chart.chartContainer.events.on("pointerdown", stopAutoRotate);
   chart.chartContainer.events.on("wheel", stopAutoRotate);
 
-  // ---------- WORLD POLYGONS ----------
-  var polygonSeries = chart.series.push(am5map.MapPolygonSeries.new(root, {
-    geoJSON: am5geodata_worldLow
-  }));
-
+  // --------- WORLD LAYER ----------
+  var polygonSeries = chart.series.push(am5map.MapPolygonSeries.new(root, { geoJSON: am5geodata_worldLow }));
   polygonSeries.mapPolygons.template.setAll({
     tooltipText: "{name}",
     interactive: true,
@@ -120,106 +138,89 @@ am5.ready(function() {
     stroke: am5.color(0x3d4860),
     strokeOpacity: 0.5
   });
+  polygonSeries.mapPolygons.template.states.create("hover", { fill: am5.color(0x33425c) });
 
-  polygonSeries.mapPolygons.template.states.create("hover", {
-    fill: am5.color(0x33425c)
-  });
-
-  // ---------- BACKGROUND + GRATICULE ----------
+  // Background and graticules
   var backgroundSeries = chart.series.push(am5map.MapPolygonSeries.new(root, {}));
-  backgroundSeries.mapPolygons.template.setAll({
-    fill: root.interfaceColors.get("alternativeBackground"),
-    fillOpacity: 0.08,
-    strokeOpacity: 0
-  });
+  backgroundSeries.mapPolygons.template.setAll({ fill: root.interfaceColors.get("alternativeBackground"), fillOpacity: .08, strokeOpacity: 0 });
   backgroundSeries.data.push({ geometry: am5map.getGeoRectangle(90, 180, -90, -180) });
 
   var graticuleSeries = chart.series.push(am5map.GraticuleSeries.new(root, {}));
-  graticuleSeries.mapLines.template.setAll({
-    strokeOpacity: 0.15,
-    stroke: am5.color(0x3d4860)
-  });
+  graticuleSeries.mapLines.template.setAll({ strokeOpacity:.15, stroke: am5.color(0x3d4860) });
 
-  // ---------- POINTS (Pins) ----------
+  // --------- PINS ----------
   var pointSeries = chart.series.push(am5map.MapPointSeries.new(root, {}));
 
-  // Bullet (red pin with pulse)
+  // Build tooltip text with formatting
+  function tooltipTextFrom(d){
+    const title = `[fontSize:16px][bold]${d.role}[/]`;
+    const org   = d.org ? `\n${d.org}` : "";
+    const addr  = (d.address && d.address.length) ? ("\n" + d.address.join("\n")) : "";
+    return `${title}${org}${addr}`;
+  }
+
+  // Bullet: pulsing red dot
   pointSeries.bullets.push(function () {
-    var circle = am5.Circle.new(root, {
-      radius: 6,
-      fill: ACCENT,
-      stroke: am5.color(0xffffff),
-      strokeWidth: 1.5,
-      tooltipText: "{name}",
+    const circle = am5.Circle.new(root, {
+      radius: 6, fill: ACCENT, stroke: am5.color(0xffffff), strokeWidth: 1.5,
       cursorOverStyle: "pointer"
     });
 
     circle.animate({
-      key: "scale",
-      from: 1,
-      to: 1.35,
-      duration: 800,
-      loops: Infinity,
-      easing: am5.ease.yoyo(am5.ease.cubic)
+      key: "scale", from: 1, to: 1.35, duration: 800,
+      loops: Infinity, easing: am5.ease.yoyo(am5.ease.cubic)
     });
 
-    // On click: rotate & zoom to the pin
+    // Tooltip instance per bullet
+    circle.set("tooltip", am5.Tooltip.new(root, {
+      getFillFromSprite: false,
+      labelText: "{tooltip}",
+    }));
+
+    // Click → rotate & zoom
     circle.events.on("click", function(ev){
-      var di = ev.target.dataItem;
-      var ctx = di.dataContext;
-      focusOn(ctx.lon, ctx.lat, ctx.name);
+      const di = ev.target.dataItem;
+      const ctx = di.dataContext;
+      focusOn(ctx.lon, ctx.lat, ctx.role + (ctx.org ? (" – " + ctx.org) : ""));
     });
 
     return am5.Bullet.new(root, { sprite: circle });
   });
 
-  // Feed data to point series
+  // Data for pins
   pointSeries.data.setAll(LOCATIONS.map(loc => ({
-    name: loc.name,
-    // Geometry: [lon, lat]
-    geometry: { type: "Point", coordinates: [loc.lon, loc.lat] },
-    lon: loc.lon,
-    lat: loc.lat
+    role: loc.role, org: loc.org, address: loc.address,
+    tooltip: tooltipTextFrom(loc),
+    geometry: { type:"Point", coordinates:[loc.lon, loc.lat] },
+    lon: loc.lon, lat: loc.lat
   })));
 
-  // ---------- FOCUS / RESET ----------
+  // --------- FOCUS / RESET ----------
   const locEl = document.getElementById("loc");
 
-  function focusOn(lon, lat, name){
+  function focusOn(lon, lat, label){
     stopAutoRotate();
-    locEl.textContent = name;
+    locEl.textContent = label;
 
-    // Rotate so that [lon, lat] is centered; for orthographic:
-    // center by rotating to the negative of target coordinates.
-    chart.animate({ key: "rotationX", to: -lon, duration: ROT_DUR, easing: am5.ease.out(am5.ease.cubic) });
-    chart.animate({ key: "rotationY", to: -lat, duration: ROT_DUR, easing: am5.ease.out(am5.ease.cubic) });
-
-    // Zoom in a bit
-    chart.animate({ key: "zoomLevel", to: FOCUS_ZOOM, duration: ROT_DUR });
+    // center target under cursor (orthographic uses negative lon/lat)
+    chart.animate({ key:"rotationX", to: -lon, duration: ROT_DUR, easing: am5.ease.out(am5.ease.cubic) });
+    chart.animate({ key:"rotationY", to: -lat, duration: ROT_DUR, easing: am5.ease.out(am5.ease.cubic) });
+    chart.animate({ key:"zoomLevel", to: FOCUS_ZOOM, duration: ROT_DUR });
   }
 
   function resetView(){
-    hideTooltips();
+    pointSeries.bulletsContainer.children.each(b => b.hideTooltip && b.hideTooltip());
     locEl.textContent = "Tap a pin…";
-    chart.animate({ key: "rotationX", to: 0, duration: 700, easing: am5.ease.out(am5.ease.cubic) });
-    chart.animate({ key: "rotationY", to: 0, duration: 700, easing: am5.ease.out(am5.ease.cubic) });
-    chart.animate({ key: "zoomLevel", to: DEFAULT_ZOOM, duration: 700 });
+    chart.animate({ key:"rotationX", to: 0, duration: 700, easing: am5.ease.out(am5.ease.cubic) });
+    chart.animate({ key:"rotationY", to: 0, duration: 700, easing: am5.ease.out(am5.ease.cubic) });
+    chart.animate({ key:"zoomLevel", to: DEFAULT_ZOOM, duration: 700 });
     startAutoRotate();
   }
-
-  function hideTooltips(){
-    pointSeries.bulletsContainer.children.each(function(b){ b.hideTooltip(); });
-  }
-
-  // Initial zoom a touch out
-  chart.set("zoomLevel", DEFAULT_ZOOM);
-
   document.getElementById("resetBtn").addEventListener("click", resetView);
 
-  // Resize safety (amCharts handles most automatically)
-  window.addEventListener("resize", () => { /* nothing extra needed */ });
-
-}); // end am5.ready()
+  // Initial zoom
+  chart.set("zoomLevel", DEFAULT_ZOOM);
+}); // end ready
 </script>
 
 </body>
